@@ -1,1 +1,48 @@
+import os
+import discord
+from discord.ext import commands
 
+TOKEN = os.getenv("DISCORD_TOKEN")
+
+intents = discord.Intents.default()
+intents.message_content = True
+intents.members = True
+intents.presences = True
+
+bot = commands.Bot(
+    command_prefix="!",
+    intents=intents,
+    help_command=None
+)
+
+
+@bot.event
+async def on_ready():
+    print(f"Logged in as {bot.user}")
+    print("GenSenteryBot is online!")
+
+
+@bot.command()
+async def ping(ctx):
+    await ctx.send(f"🏓 Pong! {round(bot.latency * 1000)}ms")
+
+
+@bot.command()
+async def hello(ctx):
+    await ctx.send(f"Hello {ctx.author.mention}! 👋")
+
+
+@bot.command()
+async def help(ctx):
+    await ctx.send(
+        "**GenSenteryBot Commands**\n\n"
+        "`!ping` — Check bot latency\n"
+        "`!hello` — Say hello\n"
+        "`!help` — Show this menu"
+    )
+
+
+if not TOKEN:
+    raise RuntimeError("DISCORD_TOKEN is not set")
+
+bot.run(TOKEN)
